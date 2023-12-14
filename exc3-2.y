@@ -6,8 +6,6 @@ int yylex();
 int yyparse();
 void yyerror(const char *s);
 
-// Переменная для хранения результата выражения
-int result;
 %}
 
 %token NUMBER
@@ -15,13 +13,10 @@ int result;
 %%
 
 // Правила синтаксического анализа
-expression: expression '\n' {
-    printf("Результат: %d\n", $1);
-    result = $1;
-} 
-          | expression '+' term   { $$ = $1 + $3; }
-          | expression '-' term   { $$ = $1 - $3; }
-          | term                  { $$ = $1; }
+expr: expr '\n' { printf("Результат: %d\n", $1); return 0;}
+          | expr '+' term   { $$ = $1 + $3; }
+          | expr '-' term   { $$ = $1 - $3; }
+          | term            { $$ = $1; }
           ;
 
 term: NUMBER { $$ = $1; };
@@ -33,6 +28,7 @@ int yylex();
 
 // Функция main
 int main() {
+
     // Вызов синтаксического анализатора
     yyparse();
     return 0;
